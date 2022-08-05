@@ -1,0 +1,42 @@
+
+
+  table {
+    width: 80%;
+    min-width: 825px;
+    margin: auto;
+    margin-top: 20px;
+    th {
+      text-align: center;
+    }
+    td {
+      text-align: center;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: bold;
+      img {
+        height: 50px;
+        width: 50px;
+      }
+      .title {
+        &:hover {
+          color: #00cc00;
+          text-decoration: underline;
+          cursor: pointer;
+      }
+      }
+      .cancel {
+        color: red;
+        &:hover {
+          background: red;
+          color: white;
+        }
+      }
+  
+      .total-price {
+        font-size: large;
+        color: #00a300;
+      }
+  
+    }
+      
+  }
+  
