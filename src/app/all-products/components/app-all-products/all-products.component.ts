@@ -1,7 +1,7 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DataService } from '../../../shared/services/data.service';
 import { Product } from '../../../shared/models/products.model';
-import {  Component, OnDestroy, OnInit} from '@angular/core';
+import { DataService } from '../../../shared/services/data.service';
 
 @Component({
   selector: 'app-all-products',
@@ -9,31 +9,25 @@ import {  Component, OnDestroy, OnInit} from '@angular/core';
   styleUrls: ['./all-products.component.scss']
 })
 export class AllProductsComponent implements OnInit, OnDestroy {
-  products: Product[];
-  pSub: Subscription;
-
+  products: Product[] = [];
   sortBy = 'None';
 
+  private subscription: Subscription = new Subscription();
 
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.pSub = this.dataService.products$.subscribe( products => {
+    this.subscription.add(this.dataService.products$.subscribe( products => {
       this.products = products;
-    });
+    }));
   }
 
   ngOnDestroy(): void {
-    this.pSub.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   sortProducts(by: string): void {
     this.sortBy = by;
     this.dataService.sortBy(by);
   }
-
-  // loadMoreProducts(): void {
-  //   this.dataService.sendProducts();
-  // }
-
 }
