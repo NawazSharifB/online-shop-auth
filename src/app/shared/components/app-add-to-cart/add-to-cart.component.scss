@@ -1,0 +1,62 @@
+.out-of-stock-message {
+    color: red;
+    text-align: center;
+    margin: 10px auto;
+}
+
+.add-to-cart {
+    height: 45px;
+    width: 100%;
+    max-width: 400px;
+    min-width: 100px;
+    margin: auto;
+    padding: 5px 0px;
+    vertical-align: middle;
+    font-size:large;
+    text-align: center;
+
+    button {
+        width: 100%;
+
+        mat-icon {
+           margin-left: 10px;
+       }
+    }
+}
+
+.rocker {
+    height: 45px;
+    width: 100%;
+    max-width: 290px;
+    min-width: 150px;
+    padding: 5px 0px;
+    margin: auto;
+    
+    button {
+        width: 20%;
+        mat-icon {
+            margin-bottom: 5px;
+            margin-left: 0px;
+        }
+    }
+
+    button.remove-button {
+        &:hover {
+            color: red;
+        } 
+    }
+
+    input {
+        width: 40%;
+        margin: 0px 10px;
+        text-align: center;
+        padding-bottom: 5px;
+        border: none;
+        font-size: larger;
+        border-bottom: 1px solid #bfbfbf;
+
+        &:disabled {
+            background: none;
+        }
+    }
+}

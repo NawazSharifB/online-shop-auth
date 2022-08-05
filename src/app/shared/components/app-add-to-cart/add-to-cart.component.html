@@ -1,0 +1,36 @@
+<p  class="out-of-stock-message"
+     [ngStyle]="{
+    'visibility': product.stock ? 'hidden': 'visible'
+}">Out Of Stock</p>
+
+<div class="add-to-cart">
+    <button class="button-design-black" 
+        mat-stroked-button
+        *ngIf="product.inCart === 0; else rocker"
+        (click)="addItem()">
+        Add To Cart <mat-icon>add_shopping_cart</mat-icon>
+    </button>
+</div>
+
+<ng-template #rocker>
+    <div class="rocker">
+        <button class="button-design-black remove-button"
+            mat-stroked-button 
+            [disabled]="product.inCart === 0"
+            (click)="reduceItem()">
+                <mat-icon>remove</mat-icon>
+        </button>
+    
+        <input class="add-to-cart-input"
+            maInput
+            disabled 
+            [value]="product.inCart">
+    
+        <button class="button-design-black"
+            mat-stroked-button
+            [disabled]="product.stock === 0"
+            (click)="addItem()">
+                <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</ng-template>
