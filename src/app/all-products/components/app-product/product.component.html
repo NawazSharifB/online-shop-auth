@@ -1,0 +1,14 @@
+<mat-card>
+    <div class="image-area">
+        <img class="product-image" [src]="product.picture">
+        <div class="available">Available: {{product.stock}}</div>
+    </div>
+    <div class="detail-area">
+        <h2 class="title" (click)="goDetails()">{{product.title | shortenTitle:25}}</h2>
+        <p>
+            <span>Price: </span>
+            <span class="price">{{product.price | currency}}</span>
+        </p>
+        <app-add-to-cart class="add-to-cart" [product]="product"></app-add-to-cart>
+    </div>
+</mat-card>

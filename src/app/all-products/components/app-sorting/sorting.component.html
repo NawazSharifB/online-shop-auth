@@ -1,0 +1,19 @@
+<div fxLayout="row" class="sort-area">
+    <span fxFlex="1 1 auto"></span>
+    <div class="sort">
+        <button class="sort-button"
+        id="sort-button"
+            mat-button 
+            [matMenuTriggerFor]="sortOrder">
+            Sort By Price- <span class="sort-by">{{sortBy}}</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #sortOrder="matMenu" xPosition="after">
+            <ng-template matMenuContent>
+                <button mat-menu-item (click)="sortProducts('None')">None</button>
+                <button mat-menu-item (click)="sortProducts('High to Low')">High to Low</button>
+                <button mat-menu-item (click)="sortProducts('Low to High')">Low to High</button>
+            </ng-template>
+        </mat-menu>
+    </div>
+</div>

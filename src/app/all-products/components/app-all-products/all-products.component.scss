@@ -1,0 +1,31 @@
+.main-div {
+    margin-top: 10px;
+    .sort {
+        margin: 0px 4% 0px 0px;
+
+        .sort-button {
+            border-bottom: 2px solid gray;
+
+            .sort-by {
+                color:  #00b300;
+                margin: 0px 5px;
+            }
+        }
+    }
+    
+    .cart-area {
+        width: 300px;
+        max-height: 100vh;
+        position: sticky;
+        position: -webkit-sticky;
+        top: 50px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+}
+
+.nothingToShow {
+    text-align: center;
+    margin-top: 200px;
+}

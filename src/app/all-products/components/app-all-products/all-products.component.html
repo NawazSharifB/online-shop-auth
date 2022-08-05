@@ -1,0 +1,62 @@
+
+<div class="main-div"
+    *ngIf="products && products.length; else nothingToShow"
+    fxLayout="column"
+    fxLayout.gt-md="row"
+    fxLayoutGap.gt-md="2px"
+    fxLayoutAlign.gt-md="space-around start">
+
+    <div fxLayout="column" fxFlex="1 1 100%" fxFlex.gt-md="1 1 70%">
+            <!-- -------------------sort area---------------- -->
+            <app-sorting></app-sorting>
+        <!-- <div fxLayout="row" class="sort-area">
+            <span fxFlex="1 1 auto"></span>
+            <div class="sort">
+                <button class="sort-button"
+                id="sort-button"
+                    mat-button 
+                    [matMenuTriggerFor]="sortOrder">
+                    Sort By Price- <span class="sort-by">{{sortBy}}</span>
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <mat-menu #sortOrder="matMenu" xPosition="after">
+                    <ng-template matMenuContent>
+                        <button mat-menu-item (click)="sortProducts('None')">None</button>
+                        <button mat-menu-item (click)="sortProducts('High to Low')">High to Low</button>
+                        <button mat-menu-item (click)="sortProducts('Low to High')">Low to High</button>
+                    </ng-template>
+                </mat-menu>
+            </div>
+        </div> -->
+
+        <!-- -----------------products area ------------------ -->
+        <div fxLayout="row wrap">
+            <div  *ngFor="let product of products"
+                [ngStyle]="{'margin.%': 2}"
+                fxFlex="0 0 96%"
+                fxFlex.gt-xs="0 0 46%"
+                fxFlex.gt-sm="0 0 29%"
+                fxFlex.gt-lg="0 0 21%">
+                <app-product [product]="product"
+                    [ngStyle.xs]="{'margin-bottom.px': 20}">
+                </app-product>
+            </div>
+            <div id="new"></div>
+        </div>
+
+        <!-- <button mat-stroked-button (click)="loadMoreProducts()"routerLink="" fragment="new">Load More</button> -->
+    </div>
+
+    <!-- -----------side cart area------------------- -->
+    <div class="cart-area"
+        fxHide.lt-lg>
+        <app-view-cart></app-view-cart>
+    </div>
+</div>
+
+<ng-template #nothingToShow>
+    <h2 class="nothingToShow">Nothing To Show</h2>
+</ng-template>
+
+    
+
