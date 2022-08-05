@@ -1,0 +1,28 @@
+<h2>Cart</h2>
+
+<ng-template #noItem>
+    <h3>No Item In Cart</h3>
+</ng-template>
+
+<!-- ng if in here -->
+<div class="cart-item-area" *ngIf="products.length; else noItem">
+    <!-- run loop in here -->
+<ng-container *ngFor="let product of products">
+    <ul class="cart-item" fxLayout="row">
+        <li class="img">
+            <img [src]="product.picture">
+        </li>
+        <li class="detail">
+            <p>{{product.title | shortenTitle:20}}</p>
+            <p><span class="price">{{product.inCart * product.price | currency}} </span>
+            <span class="amount">{{product.inCart}} piece(s)</span></p>
+        </li>
+        <li class="cancel">
+            <button mat-icon-button (click)="removeItem(product)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </li>
+    </ul>
+    <mat-divider></mat-divider>
+</ng-container>
+</div>
