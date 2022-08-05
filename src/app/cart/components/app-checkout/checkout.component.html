@@ -1,0 +1,28 @@
+<div class="checkout-area" fxLayout="row">
+    <span fxFlex="1 1 auto"></span>
+    <mat-card class="mat-elevation-z2" id="cartttt">
+      <ul fxLayout="row" >
+        <li class="title"><h2>Cart</h2></li>
+      </ul>
+      <mat-divider></mat-divider>
+      <ul fxLayout="row">
+        <li class="title">Total</li>
+        <li class="description"><span class="price">{{totalCost() | currency}}</span></li>
+      </ul>
+      <mat-divider></mat-divider>
+      <ul fxLayout="row">
+        <li class="title">Shipping</li>
+        <li class="description">
+          <p>Free Shipping</p>
+          <p>Shipping option will be updated during Checkout</p>
+        </li>
+      </ul>
+      <mat-divider></mat-divider>
+      <ul fxLayout="row">
+        <li class="description">
+          <button class="button-design-black"
+            mat-stroked-button>Checkout</button>
+        </li>
+      </ul>
+    </mat-card>
+   </div>

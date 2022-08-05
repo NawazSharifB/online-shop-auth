@@ -1,0 +1,32 @@
+.checkout-area {
+    margin: 50px 50px 50px 0px;
+    mat-card {
+      min-width: 460px;
+      ul {
+        padding-top: 20px;
+        list-style-type: none;
+        h2 {
+          font-family: 'Roboto Slab', serif;
+          font-weight: bolder;
+          font-size: x-large;
+        }
+        .title {
+          min-width: 90px;
+          font-weight: bolder;
+          font-family: 'Roboto Slab', serif;
+          font-size: larger;
+        }
+        .description {
+          font-family: 'Lora', serif;
+          font-weight: bold;
+          margin-left: 10px;
+          overflow: hidden;
+  
+          .price {
+            font-size: x-large;
+            color: #00c300;
+          }
+        }
+      }
+    }
+  }
