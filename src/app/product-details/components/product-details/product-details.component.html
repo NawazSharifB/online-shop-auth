@@ -1,0 +1,69 @@
+<ng-template #pleaseWait>
+    <p class="pleaseWait">Please Wait</p>
+</ng-template>
+
+<div
+    *ngIf="product; else pleaseWait" 
+    fxLayout="column"
+    fxLayout.gt-md="row"
+    fxLayoutGap.gt-md="2%"
+    fxLayoutAlign.gt-md="space-around start">
+
+    <div fxFlex="1 1 100%"
+        fxFlex.gt-md="1 1 70%">
+        <mat-card >
+            <div fxLayout="column"
+                fxLayout.gt-sm="row"
+                >
+                <div class="img"
+                    fxFlex.gt-sm="0 0 35%"
+                    [ngStyle]="{
+                        'width.%': 90,
+                        'height.px': 250,
+                        'margin-left.%': 5
+                    }"
+                    [ngStyle.sm]="{
+                        'width.%': 90,
+                        'height.px': 350,
+                        'margin-left.%': 5
+                    }"
+                    [ngStyle.gt-sm]="{
+                        'height.px': 250,
+                        'margin-left.px': 20
+                    }">
+                    <img [src]="product.picture">
+                </div>
+                    <div class="title-area"
+                    [ngStyle]="{
+                        'width.%': 90,
+                        'margin': 'auto',
+                        'margin-top.px': 30,
+                        'text-align': 'center'}"
+                        [ngStyle.gt-sm]="{
+                            'margin-top.px': 20,
+                            'margin-left.px': 50,
+                            'text-align': 'left'}">
+                        <h2>{{product.title | shortenTitle:product.title.length}}</h2>
+                        <h3>Price: <span class="price">{{product.price | currency}}</span></h3>
+                        <h3 
+                            [ngStyle]="{'display': product.inCart > 0 ? 'block': 'none'}">
+                            Total Price: <span class="total-price price">{{product.price * product.inCart | currency}}</span>
+                        </h3>
+                        <div class="add-to-cart-area">
+                            <app-add-to-cart [product]="product"></app-add-to-cart>
+                        </div>
+                    </div>
+        
+            </div>
+            <div class="description">
+                <h3>Description</h3>
+                <p>
+                    {{product.description}}
+                </p>
+            </div>
+        </mat-card>
+    </div>
+    <div fxHide.lt-lg class="cart-area">
+        <app-view-cart></app-view-cart>
+    </div>
+</div>
