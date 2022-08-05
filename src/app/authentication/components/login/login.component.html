@@ -1,1 +1,30 @@
-<p>login works!</p>
+<mat-card class="mat-card">
+  <mat-card-title>Login</mat-card-title>
+
+  <p class="invalid-message" *ngIf="loginForm.invalid">Invalid Login Info</p>
+
+  <mat-form-field class="input-fields">
+    <mat-label>Email</mat-label>
+    <input type="email" matInput [formControl]="emailControl">
+
+    <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
+      Please enter a valid email address
+    </mat-error>
+    <mat-error *ngIf="emailControl.hasError('required')">
+      Email is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="input-fields">
+    <mat-label>Password</mat-label>
+    <input type="password" matInput [formControl]="passwordControl">
+
+    <mat-error *ngIf="passwordControl.hasError('required')">
+      Password <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <button class="submit-button" mat-raised-button type="submit" (click)="onLogin()">Login</button>
+
+  <p class="register-message">Don't have an account  <a href="./auth/register">Register</a></p>
+</mat-card>
