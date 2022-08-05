@@ -1,0 +1,24 @@
+.main-div {
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    margin-bottom: 150px;
+    z-index: 10;
+
+    mat-toolbar {
+        max-width: 1800px;
+        min-width: 210px;
+        background: #1a1a1a;
+        color: white;
+        margin: auto;
+
+        .active-route {
+            color: gray;
+        }
+
+        .nav-dropdown {
+            color: white;
+        }
+    }
+}
