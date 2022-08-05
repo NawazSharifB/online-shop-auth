@@ -1,0 +1,32 @@
+@import '../../../../assets/styles/variables.scss';
+
+.mat-card {
+  width: 350px;
+  margin: auto;
+  margin-top: 100px;
+
+  .invalid-message {
+    margin-top: 20px;
+    color: $danger;
+    text-align: center;
+  }
+
+  .input-fields {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .submit-button {
+    margin-top: 20px;
+  }
+
+  .register-message {
+    margin-top: 10px;
+    color: gray;
+    text-align: center;
+
+    a {
+      color: blue;
+    }
+  }
+}

@@ -1,1 +1,54 @@
-<p>registration works!</p>
+<mat-card class="mat-card">
+  <mat-card-title>Register</mat-card-title>
+  <p class="invalid-message" *ngIf="registrationForm.invalid">Please Fill in the Form Properly</p>
+
+  <mat-form-field class="input-fields">
+    <mat-label>First Name</mat-label>
+    <input matInput [formControl]="firstNameControl">
+
+    <mat-error *ngIf="firstNameControl.hasError('required')">
+      First name is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="input-fields">
+    <mat-label>Last Name</mat-label>
+    <input matInput [formControl]="lastNameControl">
+
+    <mat-error *ngIf="lastNameControl.hasError('required')">
+      Last name is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="input-fields">
+    <mat-label>Email</mat-label>
+    <input matInput [formControl]="emailControl">
+
+    <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
+      Please enter a valid email address
+    </mat-error>
+    <mat-error *ngIf="emailControl.hasError('required')">
+      Email is <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="input-fields">
+    <mat-label>Password</mat-label>
+    <input type="password" matInput [formControl]="passwordControl">
+
+    <mat-error *ngIf="passwordControl.hasError('required')">
+      Password <strong>required</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="input-fields">
+    <mat-label>Confirm Password</mat-label>
+    <input type="password" matInput [formControl]="confirmPasswordControl">
+
+    <mat-error *ngIf="passwordControl.hasError('required')">
+      Please <strong>confirm </strong> password
+    </mat-error>
+  </mat-form-field>
+
+  <button class="submit-button" mat-raised-button (click)="register()">Register</button>
+</mat-card>
