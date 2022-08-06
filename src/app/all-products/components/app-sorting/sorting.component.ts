@@ -1,5 +1,8 @@
+import { SortByOptions } from './../../../shared/enums/sort-by-options';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from './../../../shared/services/data.service';
+import { SORT_OPTIONS } from '../../constants/sort-options';
+import { DropdownOptions } from '../../../shared/interfaces/dropdown-options';
 
 @Component({
   selector: 'app-sorting',
@@ -7,8 +10,9 @@ import { DataService } from './../../../shared/services/data.service';
   styleUrls: ['./sorting.component.scss']
 })
 export class SortingComponent implements OnInit {
-
-  sortBy = 'None';
+  availableSortingOptions = SORT_OPTIONS;
+  sortOptions = SortByOptions;
+  sortBy: DropdownOptions<SortByOptions> = this.availableSortingOptions[0];
   constructor(
     private dataService: DataService
   ) { }
@@ -16,9 +20,9 @@ export class SortingComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  sortProducts(by: string): void {
-    this.sortBy = by;
-    this.dataService.sortBy(by);
+  sortProducts(sortChoice: DropdownOptions<SortByOptions>): void {
+    this.sortBy = sortChoice;
+    this.dataService.sortBy(sortChoice.key).subscribe();
   }
 
 }
