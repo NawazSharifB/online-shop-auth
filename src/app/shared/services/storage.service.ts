@@ -1,6 +1,8 @@
+import { PurchasedProductData } from './../interfaces/purchase-product-data';
 import { ShopClientService } from './shop-client.service';
 import { Injectable } from '@angular/core';
-import { Observer, Observable, observable, map } from 'rxjs';
+import { Observable, observable, BehaviorSubject, of } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 import { FailedObservableResponse } from '../interfaces/failed-observable-response';
 import { LoggedInUserCredential } from '../interfaces/logged-in-user-credential';
 import { LoginUserData } from '../interfaces/login-user-data';
@@ -8,27 +10,36 @@ import { RegisterUserData } from '../interfaces/register-user-data';
 import { SuccessfulObservableResponse } from '../interfaces/successful-observable-response';
 import { Product } from '../models/products.model';
 import { PurchasedUserInfo } from '../interfaces/purchased-user-info';
+import { CartProduct } from '../models/cart-product';
+import { UserPurchaseInfo } from '../models/user-purchase-info';
+import { FailureResponse } from '../models/failure-response';
+import { SortByOptions } from '../enums/sort-by-options';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
+  loggedInUserId$ = new BehaviorSubject<string>('');
+
   private readonly registeredUserDataStorageKey = 'registeredUserInfo';
   private readonly purchasedDataStorageKey = 'purchasedStorageInfo';
+  private readonly allProductsStorageKey = 'allProductsInfo';
 
   constructor(private shopClientService: ShopClientService) {
-    if (this.hasRegisteredUserInfoKey()) {
-      localStorage.setItem(this.registeredUserDataStorageKey, this.getStringifiedData([]));
-    }
-
-    if (!this.hasPurchasedUserInfoKey()) {
-      localStorage.setItem(this.registeredUserDataStorageKey, this.getStringifiedData([]));
-    }
+    [
+      this.registeredUserDataStorageKey,
+      this.purchasedDataStorageKey,
+      this.allProductsStorageKey
+    ].forEach(storageKey => {
+      if (!this.hasKeysInLocalStorage(storageKey)) {
+        localStorage.setItem(storageKey, this.getStringifiedData([]));
+      }
+    })
   }
 
   fetchAllProducts(): Observable<Product[]> {
-    return this.shopClientService
-      .fetchAllProducts()
+    return this.getLocallyStoredProducts().length ? of(this.getLocallyStoredProducts()) : this.shopClientService
+    .fetchAllProducts()
       .pipe(
         map(products => {
           products.forEach(product => {
@@ -38,15 +49,15 @@ export class StorageService {
           });
 
           return products;
-        })
+        }),
+        tap(products => this.storeProductsLocally(products)),
       );
   }
-
 
   registerUser(registerData: RegisterUserData): Observable<SuccessfulObservableResponse> {
     return new Observable(observable => {
       if (this.doesUserAlreadyExist(registerData.email)) {
-        observable.error(this.getCommonFailedResponse('alreadyExists', 'This User already exists'));
+        observable.error(this.getCommonFailedResponse(new FailureResponse('alreadyExists', 'This User already exists', '400')));
       } else {
         registerData.userId = Date.now().toString();
         this.setRegisteredUserInfo(registerData);
@@ -67,16 +78,190 @@ export class StorageService {
       const loggedInUserCred = this.getLoginUserCred(userData);
       observer.next(loggedInUserCred);
     } else {
-      observer.error(this.getCommonFailedResponse('invalid', 'Invalid email or password'));
+      observer.error(this.getCommonFailedResponse(new FailureResponse('invalid', 'Invalid email or password', '403')));
     }
 
     observer.complete();
     });
+  }
 
+  sortProducts(sortBy: SortByOptions): Product[] {
+    const allProducts = this.getLocallyStoredProducts();
+
+    switch (sortBy) {
+      case SortByOptions.LowToHigh:
+        allProducts.sort((a, b) => a.price - b.price);
+        break;
+      case SortByOptions.HighToLow:
+        allProducts.sort((a, b) => b.price - a.price);
+        break;
+    }
+
+    return allProducts;
+  }
+
+  addToCart(product: Product, incrementBy = 1): Observable<SuccessfulObservableResponse> {
+    return new Observable(observer => {
+      if (this.hasUnavailableProduct(product)) {
+        observer.error(this.getCommonFailedResponse(<FailureResponse>this.hasUnavailableProduct(product, incrementBy)));
+      } else {
+        const updatedUserCart = this.incrementLoggedInUserCartItem(product, incrementBy);
+        const updatedAllUserPurchaseInfo = this.updateAllUserPurchaseInfo(updatedUserCart);
+
+        this.storeAllUserPurchaseInfo(updatedAllUserPurchaseInfo);
+        this.updateAllProductInfo(product._id, -1);
+        observer.next(this.getCommonSuccessfulResponse('Successfully added product to cart'));
+      }
+
+      observer.complete();
+    })
+  }
+
+  reduceToCart(product: Product): Observable<SuccessfulObservableResponse> {
+    const minimumStockNeeded = 0;
+
+    return new Observable(observer => {
+      if (this.hasUnavailableProduct(product, minimumStockNeeded)) {
+        observer.error(this.getCommonFailedResponse(<FailureResponse>this.hasUnavailableProduct(product)));
+      } else {
+        const updatedUserCart = this.decrementLoggedInUserCartItem(product);
+        const updatedAllUserPurchaseInfo = this.updateAllUserPurchaseInfo(updatedUserCart);
+
+        this.storeAllUserPurchaseInfo(updatedAllUserPurchaseInfo);
+        this.updateAllProductInfo(product._id, 1);
+        observer.next(this.getCommonSuccessfulResponse('Successfully reduced product to cart'));
+      }
+
+      observer.complete();
+    })
+  }
+
+  removeFromCart(product: Product): Observable<SuccessfulObservableResponse> {
+    const minimumStockNeeded = 0;
+
+    return new Observable(observer => {
+      if (this.hasUnavailableProduct(product, minimumStockNeeded)) {
+        observer.error(this.getCommonFailedResponse(<FailureResponse>this.hasUnavailableProduct(product)));
+      } else {
+        const updatedUserCart = this.removedLoggedInUserCartItem(product);
+        const updatedAllUserPurchaseInfo = this.updateAllUserPurchaseInfo(updatedUserCart);
+
+        this.storeAllUserPurchaseInfo(updatedAllUserPurchaseInfo);
+        this.updateAllProductInfo(product._id, product.inCart);
+        observer.next(this.getCommonSuccessfulResponse('Successfully reduced product to cart'));
+      }
+
+      observer.complete();
+    })
+  }
+
+  getLoggedInUserPurchaseInfo(): PurchasedProductData[] {
+    return this.getPurchasedUserInfo().find(userInfo => userInfo.userId === this.loggedInUserId$.value)?.purchasedProductData || [];
+  }
+
+  getLocallyStoredProducts(): Product[] {
+    const stringifiedData = <string>localStorage.getItem(this.allProductsStorageKey);
+    return this.getParsedData(stringifiedData);
+  }
+
+  private updateAllProductInfo(productId: string, changeBy: number): void {
+    const allProducts = this.getLocallyStoredProducts();
+    const modifiedProduct = <Product>allProducts.find(product => product._id === productId);
+
+    modifiedProduct.stock += changeBy;
+    // modifiedProduct.inCart -= changeBy;
+
+    this.storeProductsLocally(allProducts);
+  }
+
+  private hasUnavailableProduct(product: Product, inStockNeed = 1): FailureResponse | null {
+    const inStoreProduct = this.getLocallyStoredProducts().find(item => item._id === product._id);
+
+    if (!inStoreProduct) {
+      return new FailureResponse('notFound', 'Product not found', '404');
+    } else if(inStoreProduct.stock < inStockNeed)  {
+      return new FailureResponse('notEnoughStock', 'Stock is limited', '400');
+    }
+
+    return null;
+  }
+
+  private incrementLoggedInUserCartItem(product: Product, incrementBy: number): PurchasedProductData[] {
+    const loggedInUserPurchaseInfo = this.getLoggedInUserPurchaseInfo();
+
+    for(const purchasedProduct of loggedInUserPurchaseInfo) {
+      if (purchasedProduct.productId === product._id) {
+       purchasedProduct.amount+= incrementBy;
+
+       return loggedInUserPurchaseInfo;
+      }
+     }
+
+     loggedInUserPurchaseInfo.push(new CartProduct(1, product._id));
+
+     return loggedInUserPurchaseInfo;
+  }
+
+  private decrementLoggedInUserCartItem(product: Product): PurchasedProductData[] {
+    const minimumProductLength = 0;
+    const loggedInUserPurchaseInfo = this.getLoggedInUserPurchaseInfo();
+
+    for(const purchasedProduct of loggedInUserPurchaseInfo) {
+      if (purchasedProduct.productId === product._id && purchasedProduct.amount > minimumProductLength) {
+       purchasedProduct.amount --;
+
+       return purchasedProduct.amount < 1 ? this.removedLoggedInUserCartItem(product) : loggedInUserPurchaseInfo;
+      }
+     }
+
+     return loggedInUserPurchaseInfo;
+  }
+
+  private removedLoggedInUserCartItem(product: Product): PurchasedProductData[] {
+    const loggedInUserPurchaseInfo = this.getLoggedInUserPurchaseInfo();
+
+    for(const purchasedProduct of loggedInUserPurchaseInfo) {
+      if (purchasedProduct.productId === product._id) {
+        const indexOfProduct = loggedInUserPurchaseInfo.indexOf(purchasedProduct);
+
+        loggedInUserPurchaseInfo.splice(indexOfProduct, 1);
+
+       return loggedInUserPurchaseInfo;
+      }
+     }
+
+     return loggedInUserPurchaseInfo;
+  }
+
+  private updateAllUserPurchaseInfo(purchaseInfo: PurchasedProductData[]): PurchasedUserInfo[] {
+    const allUserPurchaseInfo = this.getPurchasedUserInfo();
+    for (const userPurchaseInfo of allUserPurchaseInfo) {
+      if (userPurchaseInfo.userId === this.loggedInUserId$.value) {
+        userPurchaseInfo.purchasedProductData = purchaseInfo;
+
+        return allUserPurchaseInfo;
+      }
+    }
+
+    allUserPurchaseInfo.push(new UserPurchaseInfo(this.loggedInUserId$.value, purchaseInfo))
+
+    return allUserPurchaseInfo;
+  }
+
+  private storeAllUserPurchaseInfo(purchaseInfo: PurchasedUserInfo[]): void {
+    const stringifiedData = this.getStringifiedData(purchaseInfo);
+
+    localStorage.setItem(this.purchasedDataStorageKey, stringifiedData);
+  }
+
+  private storeProductsLocally(products: Product[]): void {
+    const stringifiedData = this.getStringifiedData(products);
+
+    localStorage.setItem(this.allProductsStorageKey, stringifiedData);
   }
 
   private getPurchasedUserInfo(): PurchasedUserInfo[] {
-    const stringifiedInfo = <string>localStorage.getItem(this.purchasedDataStorageKey);
+    const stringifiedInfo = <string>localStorage.getItem(this.purchasedDataStorageKey) || JSON.stringify([]);
 
     return this.getParsedData(stringifiedInfo);
   }
@@ -102,15 +287,7 @@ export class StorageService {
     return this.getParsedData(stringifiedData);
   }
 
-  private hasRegisteredUserInfoKey(): boolean {
-    return !!localStorage.getItem(this.registeredUserDataStorageKey);
-  }
-
-  private hasPurchasedUserInfoKey(): boolean {
-    return !!localStorage.getItem(this.purchasedDataStorageKey);
-  }
-
-  private setRegisteredUserInfo(registeredUserInfo: Omit<RegisterUserData, 'confirmPassword'>): void {
+  private setRegisteredUserInfo(registeredUserInfo: RegisterUserData): void {
     const allRegisteredUserInfo = this.getAllRegisteredUserInfo();
 
     allRegisteredUserInfo.push(registeredUserInfo);
@@ -132,9 +309,10 @@ export class StorageService {
     };
   }
 
-  private getCommonFailedResponse(key: string, message: string): FailedObservableResponse {
+  private getCommonFailedResponse(responseData: FailureResponse): FailedObservableResponse {
     return {
-      [key]: message,
+      [responseData.key]: responseData.message,
+      status: responseData.errorStatus,
     };
   }
 
@@ -143,9 +321,14 @@ export class StorageService {
       for (const purchasedProduct of purchasedProducts.purchasedProductData) {
         if (purchasedProduct.productId === product._id) {
           product.stock -= purchasedProduct.amount;
+          // product.inCart = purchasedProduct.amount;
           break;
         }
       }
     });
+  }
+
+  private hasKeysInLocalStorage(keys: string): boolean {
+    return !!localStorage.getItem(keys);
   }
 }
