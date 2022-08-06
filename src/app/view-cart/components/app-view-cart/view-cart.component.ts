@@ -11,21 +11,24 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 })
 export class ViewCartComponent implements OnInit, OnDestroy {
   products: Product[] = [];
-  dataService$: Subscription;
+
+  private subscription$ = new Subscription();
 
   constructor(private dataService: DataService,
               private cartService: CartService) { }
 
   ngOnInit(): void {
-    this.dataService$ = this.dataService.cart$.subscribe( items => this.products = items);
+    this.subscription$.add(
+      this.dataService.userCartInfo$.subscribe( items => this.products = items),
+    );
   }
 
   ngOnDestroy(): void {
-    this.dataService$.unsubscribe();
+    this.subscription$.unsubscribe();
   }
 
   removeItem(product: Product): void {
-    this.cartService.removeFromCart(product);
+    this.cartService.removeFromCart(product).subscribe();
   }
 
 }
