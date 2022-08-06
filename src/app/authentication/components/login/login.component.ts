@@ -1,8 +1,9 @@
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
-import { AuthenticationService } from './../../services/authentication.service';
+import { AvailableRoutes } from './../../../shared/enums/available-routes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.authenticationService.redirectIfHasValidLoginInfo();
@@ -45,10 +46,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.loginUser();
+  }
+
+  private loginUser(): void {
     this.subscription$.add(this.authenticationService
       .loginUser(this.loginForm.value)
       .subscribe(
-        () => this.router.navigate(['/all-products']),
+        () => this.router.navigate([`/${AvailableRoutes.AllProducts}`]),
         () => this.hasInvalidForm = true,
       ));
   }
