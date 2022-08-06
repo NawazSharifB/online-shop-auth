@@ -10,13 +10,16 @@ import { DataService } from '../../../shared/services/data.service';
 })
 export class AllProductsComponent implements OnInit, OnDestroy {
   products: Product[] = [];
-  sortBy = 'None';
 
   private subscription: Subscription = new Subscription();
 
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
+    if (!this.dataService.products$.value.length) {
+      this.subscription.add(this.dataService.fetchAllProducts().subscribe());
+    }
+
     this.subscription.add(this.dataService.products$.subscribe( products => {
       this.products = products;
     }));
@@ -24,10 +27,5 @@ export class AllProductsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  sortProducts(by: string): void {
-    this.sortBy = by;
-    this.dataService.sortBy(by);
   }
 }
