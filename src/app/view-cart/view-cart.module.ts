@@ -7,7 +7,7 @@ import { ViewCartComponent } from "./components/app-view-cart/view-cart.componen
 const EXPORTABLE_DECLARATIONS = [ViewCartComponent];
 @NgModule({
   declarations: [EXPORTABLE_DECLARATIONS],
-  imports: [/*CommonModule,*/ NgMaterialModule, SharedModule],
+  imports: [NgMaterialModule, SharedModule],
   exports: [EXPORTABLE_DECLARATIONS],
 })
 export class ViewCartModule {}
