@@ -32,4 +32,4 @@ import { ViewCartModule } from '../view-cart/view-cart.module';
 
     ],
   })
-  export class AllProductsModule { }
+  export class ProductsModule { }
