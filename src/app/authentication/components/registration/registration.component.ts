@@ -1,8 +1,9 @@
-import { AuthenticationService } from './../../services/authentication.service';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AvailableRoutes } from '../../../shared/enums/available-routes';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-registration',
@@ -52,10 +53,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.subscription.add(this.authenticationService
+    this.registerUser();
+  }
+
+  private registerUser(): void {
+  this.subscription.add(this.authenticationService
     .registerUser(this.registrationForm.value)
     .subscribe(() => {
-      this.router.navigate(['/auth/login']);
+      this.router.navigate([`/${AvailableRoutes.AuthLogin}`]);
     },
     () => {
       this.hasInvalidForm = true;
