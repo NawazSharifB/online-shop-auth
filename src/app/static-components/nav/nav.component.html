@@ -1,42 +1,90 @@
 <div class="main-div">
-    <mat-toolbar fxlayout="row">
-        <h1 routerLink="/">SHOP</h1>
-        <button 
-            mat-button 
-            routerLink="/all-products"
-            [routerLinkActiveOptions]="{exact: true}"
-            routerLinkActive="active-route"
-            fxHide.lt-sm
-            [ngStyle.gt-xs]="{'margin-left.px': 20}">all-products</button>
-        
-        <button mat-button routerLink="/cart" [routerLinkActiveOptions]="{exact: true}"
-        routerLinkActive="active-route" fxHide.lt-sm>Cart</button>
-        <span fxFlex="1 1 auto"></span>
-        <!-- <button mat-button routerLink="/checkout"[routerLinkActiveOptions]="{exact: true}"
-        routerLinkActive="active-route" fxHide.lt-sm>Checkout</button> -->
-        <button 
-            mat-icon-button
-            [ngStyle.gt-xs]="{'margin-right.px': 20}">
-            <mat-icon [matBadge]="totalCartItem" matBadgeColor="warn" routerLink="/cart">add_shopping_cart</mat-icon>
-        </button>
-        <button class="nav-dropdown"
-            mat-button
-            fxHide.gt-xs
-            [matMenuTriggerFor]="navDropDown">
-            <mat-icon>view_headline</mat-icon>
-        </button>
-        
-    </mat-toolbar>
-    <mat-progress-bar mode="indeterminate" *ngIf="dataService.loading | async"></mat-progress-bar>
+  <mat-toolbar fxlayout="row">
+    <h1 routerLink="/">SHOP</h1>
+
+    <button
+      *ngIf="isUserLoggedIn"
+      mat-button
+      routerLink="/all-products"
+      [routerLinkActiveOptions]="{exact: true}"
+      routerLinkActive="active-route"
+      fxHide.lt-sm
+      [ngStyle.gt-xs]="{'margin-left.px': 20}"
+    >
+      all-products
+    </button>
+
+    <span fxFlex="1 1 auto"></span>
+
+    <ng-container *ngIf="isUserLoggedIn else toSignUp">
+      <button
+          mat-icon-button
+          [ngStyle.gt-xs]="{'margin-right.px': 20}">
+          <mat-icon [matBadge]="totalCartItem" matBadgeColor="warn" routerLink="/cart">add_shopping_cart</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        [ngStyle.gt-xs]="{'margin-right.px': 20}"
+        (click)="logoutUser()"
+      >
+        Logout
+      </button>
+    </ng-container>
+
+
+    <button class="nav-dropdown"
+        mat-button
+        fxHide.gt-xs
+        [matMenuTriggerFor]="navDropDown">
+        <mat-icon>view_headline</mat-icon>
+    </button>
+
+  </mat-toolbar>
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isDataLoading | async"></mat-progress-bar>
 </div>
 
 <mat-menu #navDropDown="matMenu">
     <ng-template matMenuContent>
-        <button mat-menu-item routerLink="/product/all-products" [routerLinkActiveOptions]="{exact: true}"
-        routerLinkActive="active-route">all-products</button>
-        <button mat-menu-item routerLink="/cart" [routerLinkActiveOptions]="{exact: true}"
-        routerLinkActive="active-route">Cart</button>
-        <button mat-menu-item routerLink="/cart/checkout" [routerLinkActiveOptions]="{exact: true}"
-        routerLinkActive="active-route">Checkout</button>
+        <button
+          mat-menu-item
+          routerLink="/all-products"
+          [routerLinkActiveOptions]="{exact: true}"
+          routerLinkActive="active-route"
+        >
+          all-products
+        </button>
+
+        <button
+          mat-menu-item
+          routerLink="/cart"
+          [routerLinkActiveOptions]="{exact: true}"
+          routerLinkActive="active-route"
+        >
+          Cart
+        </button>
     </ng-template>
 </mat-menu>
+
+<ng-template #toSignUp>
+  <button
+    mat-icon-button
+    [ngStyle.gt-xs]="{'margin-right.px': 20}"
+    routerLink="/auth/login"
+    [routerLinkActiveOptions]="{exact: true}"
+    routerLinkActive="active-route"
+  >
+    Login
+  </button>
+
+  <button
+    mat-icon-button
+    [ngStyle.gt-xs]="{'margin-right.px': 20}"
+    routerLink="/auth/register"
+    [routerLinkActiveOptions]="{exact: true}"
+    routerLinkActive="active-route"
+  >
+    Register
+  </button>
+</ng-template>
