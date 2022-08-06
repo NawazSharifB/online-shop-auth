@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { CartService } from '../../../shared/services/cart.service';
 import { DataService } from '../../../shared/services/data.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -14,30 +14,32 @@ import { Product } from '../../../shared/models/products.model';
 })
 
 export class CartComponent implements OnInit, OnDestroy {
-
-  dataService$: Subscription;
-  showTable = true;
-
   displayedColumns: string[] = ['Cancel', 'Picture', 'Title', 'Price', 'Edit', 'SubTotal'];
 
-  constructor(public dataService: DataService,
-              public route: ActivatedRoute,
-              private cartService: CartService) { }
+  private subscription$ = new Subscription();
+
+  constructor(
+    public route: ActivatedRoute,
+    private dataService: DataService,
+    private cartService: CartService,
+  ) {}
 
   ngOnInit(): void {
-
-    this.dataService$ = this.dataService.cart$.subscribe(() => {
-      this.showTable = false;
-      setTimeout(() => this.showTable = true, 50);
-    });
+    if (!this.dataService.products$.value.length) {
+      this.subscription$.add(this.dataService.fetchAllProducts().subscribe());
+    }
   }
 
   ngOnDestroy(): void {
-    this.dataService$.unsubscribe();
+    this.subscription$.unsubscribe();
+  }
+
+  get cartItems(): Observable<Product[]> {
+    return this.dataService.userCartInfo$.asObservable();
   }
 
   removeItem(element: Product): void {
-    this.cartService.removeFromCart(element);
+    this.cartService.removeFromCart(element).subscribe();
   }
 
 }
