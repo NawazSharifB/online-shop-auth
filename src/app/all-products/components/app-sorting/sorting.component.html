@@ -1,20 +1,24 @@
 <div fxLayout="row" class="sort-area">
-    <span fxFlex="1 1 auto"></span>
-    <div class="sort">
-        <button class="sort-button"
-          id="sort-button"
-          mat-button
-          [matMenuTriggerFor]="sortOrder"
-        >
-          Sort By Price- <span class="sort-by">{{sortBy.text}}</span>
-          <mat-icon>arrow_drop_down</mat-icon>
-        </button>
-        <mat-menu #sortOrder="matMenu" xPosition="after">
-            <ng-template matMenuContent>
-              <ng-container *ngFor="let sortOption of availableSortingOptions">
-                <button mat-menu-item (click)="sortProducts(sortOption)">{{ sortOption.text }}</button>
-              </ng-container>
-            </ng-template>
-        </mat-menu>
-    </div>
+  <span fxFlex="1 1 auto"></span>
+
+  <div class="sort">
+    <button
+      class="sort-button"
+      id="sort-button"
+      mat-button
+      [matMenuTriggerFor]="sortOrder"
+    >
+      Sort By Price- <span class="sort-by">{{sortBy.text}}</span>
+
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+
+    <mat-menu #sortOrder="matMenu" xPosition="after">
+        <ng-template matMenuContent>
+          <ng-container *ngFor="let sortOption of availableSortingOptions">
+            <button mat-menu-item (click)="sortProducts(sortOption)">{{ sortOption.text }}</button>
+          </ng-container>
+        </ng-template>
+    </mat-menu>
+  </div>
 </div>
