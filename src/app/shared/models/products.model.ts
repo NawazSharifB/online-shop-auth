@@ -9,6 +9,10 @@ export class Product {
       public price: number,
       public stock: number,
   ) {}
+
+  get totalPrice(): number {
+    return this.inCart * this.price;
+  }
 }
 
 
