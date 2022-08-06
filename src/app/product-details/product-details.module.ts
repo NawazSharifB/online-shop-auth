@@ -26,4 +26,4 @@ import { SharedModule } from '../shared/shared.module';
         ])
     ],
   })
-export class AppProductDetailsModule { }
+export class ProductDetailsModule { }
