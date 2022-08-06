@@ -4,5 +4,4 @@ export interface RegisterUserData {
   email: string;
   password: string;
   userId?: string;
-  confirmPassword?: string;
 }
