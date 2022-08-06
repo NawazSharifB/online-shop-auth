@@ -20,13 +20,13 @@
     margin-top: 20px;
   }
 
-  .register-message {
+  .login-message {
     margin-top: 10px;
-    color: gray;
+    color: $secondaryTextColor;
     text-align: center;
 
     a {
-      color: blue;
+      color: $linkColor;
     }
   }
 }

@@ -1,6 +1,6 @@
 <mat-card class="mat-card">
   <mat-card-title>Register</mat-card-title>
-  <p class="invalid-message" *ngIf="registrationForm.invalid">Please Fill in the Form Properly</p>
+  <p class="invalid-message" *ngIf="hasInvalidForm">Please Fill in the Form Properly</p>
 
   <mat-form-field class="input-fields">
     <mat-label>First Name</mat-label>
@@ -41,14 +41,7 @@
     </mat-error>
   </mat-form-field>
 
-  <mat-form-field class="input-fields">
-    <mat-label>Confirm Password</mat-label>
-    <input type="password" matInput [formControl]="confirmPasswordControl">
-
-    <mat-error *ngIf="passwordControl.hasError('required')">
-      Please <strong>confirm </strong> password
-    </mat-error>
-  </mat-form-field>
-
   <button class="submit-button" mat-raised-button (click)="register()">Register</button>
+
+  <p class="login-message">Already has an account? <a routerLink="/auth/login">Login</a></p>
 </mat-card>

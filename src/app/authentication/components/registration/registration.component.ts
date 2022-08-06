@@ -1,8 +1,8 @@
 import { AuthenticationService } from './../../services/authentication.service';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { confirmPasswordMatch } from '../../form-validators/confirm-password.validator';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -10,14 +10,19 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./registration.component.scss']
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
-  isRegistrationFormInvalid = false;
   registrationForm!: FormGroup;
+  hasInvalidForm = false;
 
   private subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
+    this.authenticationService.redirectIfHasValidLoginInfo();
     this.createRegistrationForm();
   }
 
@@ -41,20 +46,19 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     return <FormControl>this.registrationForm.get('password');
   }
 
-  get confirmPasswordControl(): FormControl {
-    return <FormControl>this.registrationForm.get('confirmPassword');
-  }
-
   register(): void {
     if (this.registrationForm.invalid) {
-      this.isRegistrationFormInvalid = true;
+      this.hasInvalidForm = true;
       return;
     }
 
     this.subscription.add(this.authenticationService
     .registerUser(this.registrationForm.value)
-    .subscribe(data => {
-      console.log(data);
+    .subscribe(() => {
+      this.router.navigate(['/auth/login']);
+    },
+    () => {
+      this.hasInvalidForm = true;
     }));
   }
 
@@ -64,7 +68,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       lastName: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.minLength(4)]],
-      confirmPassword: [null, [Validators.required]],
     });
   }
 
