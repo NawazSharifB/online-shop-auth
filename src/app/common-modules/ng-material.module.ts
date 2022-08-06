@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -24,7 +23,6 @@ const MODULES = [
     MatListModule,
     MatDividerModule,
     MatTableModule,
-    MatSnackBarModule,
     MatMenuModule,
     MatProgressBarModule
 ];
