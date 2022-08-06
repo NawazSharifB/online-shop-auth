@@ -1,5 +1,6 @@
+import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { ReactiveFormsModule } from "@angular/forms";
 import { NgMaterialModule } from "../common-modules/ng-material.module";
 import { AuthenticationRoutingModule } from "./authentication.routing.module";
 import { LoginComponent } from "./components/login/login.component";
@@ -7,6 +8,6 @@ import { RegistrationComponent } from "./components/registration/registration.co
 
 @NgModule({
   declarations: [RegistrationComponent, LoginComponent],
-  imports: [NgMaterialModule, AuthenticationRoutingModule],
+  imports: [CommonModule, ReactiveFormsModule, NgMaterialModule, AuthenticationRoutingModule],
 })
 export class AuthenticationModule {}
