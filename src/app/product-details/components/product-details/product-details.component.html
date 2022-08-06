@@ -3,7 +3,7 @@
 </ng-template>
 
 <div
-    *ngIf="product; else pleaseWait" 
+    *ngIf="product; else pleaseWait"
     fxLayout="column"
     fxLayout.gt-md="row"
     fxLayoutGap.gt-md="2%"
@@ -45,7 +45,7 @@
                             'text-align': 'left'}">
                         <h2>{{product.title | shortenTitle:product.title.length}}</h2>
                         <h3>Price: <span class="price">{{product.price | currency}}</span></h3>
-                        <h3 
+                        <h3
                             [ngStyle]="{'display': product.inCart > 0 ? 'block': 'none'}">
                             Total Price: <span class="total-price price">{{product.price * product.inCart | currency}}</span>
                         </h3>
@@ -53,7 +53,7 @@
                             <app-add-to-cart [product]="product"></app-add-to-cart>
                         </div>
                     </div>
-        
+
             </div>
             <div class="description">
                 <h3>Description</h3>

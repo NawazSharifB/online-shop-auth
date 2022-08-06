@@ -1,8 +1,8 @@
-import { DataService } from '../../../shared/services/data.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Product } from '../../../shared/models/products.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
+import { Product } from '../../../shared/models/products.model';
+import { DataService } from '../../../shared/services/data.service';
 
 @Component({
   selector: 'app-product-details',
@@ -10,48 +10,45 @@ import { combineLatest, Subscription } from 'rxjs';
   styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
-  counter = 0;
-  product: Product;
-  dSub: Subscription;
+  product!: Product;
 
-  constructor(private dataService: DataService,
-              private route: ActivatedRoute,
-              private router: Router) { }
+  private subscription$ = new Subscription();
+
+  constructor(
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.getProduct();
   }
 
   ngOnDestroy(): void {
-    this.dSub.unsubscribe();
+    this.subscription$.unsubscribe();
   }
 
   private getProduct(): void {
-    this.dSub = combineLatest([this.route.paramMap, this.dataService.products$])
+    this.subscription$.add(
+      combineLatest([this.route.paramMap, this.dataService.fetchAllProducts()])
       .subscribe( data => {
         const param = data[0].get('id');
-        const products = data[1];
+        const products = this.dataService.products$.value;
 
-        if (products.length) {
-          products.forEach( product => {
-            if (product._id === param) {
-              this.product = product;
-            }
-          });
-          if (!this.product) {
-            this.router.navigate(['/not-found']);
+        products.forEach( product => {
+          if (product._id === param) {
+            this.product = product;
           }
-        } else {
-          if (this.counter > 3) {
-            this.router.navigate(['/server-error']);
-          } else {
-            setTimeout(() => {
-              this.counter++;
-              this.getProduct();
-            }, 3000);
-          }
+        });
+
+        if (!this.product) {
+          this.router.navigate(['/not-found']);
         }
-      });
+      },
+      () => {
+        this.router.navigate(['/server-error']);
+      })
+    );
   }
 
 
