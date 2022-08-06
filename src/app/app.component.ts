@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
-import { DataService } from './app-shared/services/data.service';
+import { DataService } from './shared/services/data.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
       this.dataService.pageSize.next(change[0].mqAlias);
     });
 
-    this.dataService.fetchData();
+    this.dataService.fetchAllProducts().subscribe();
   }
 
   ngOnDestroy(): void {
