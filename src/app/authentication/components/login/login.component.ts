@@ -1,5 +1,7 @@
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { AuthenticationService } from './../../services/authentication.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -7,13 +9,25 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  hasInvalidForm = false;
   loginForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) { }
+  private subscription$ = new Subscription();
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
+    this.authenticationService.redirectIfHasValidLoginInfo();
     this.createLoginForm();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription$.unsubscribe();
   }
 
   get emailControl(): FormControl {
@@ -25,11 +39,18 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): void {
-    this.authenticationService
+    if (this.loginForm.invalid) {
+      this.hasInvalidForm = true;
+
+      return;
+    }
+
+    this.subscription$.add(this.authenticationService
       .loginUser(this.loginForm.value)
-      .subscribe(data => {
-        console.log(data);
-      });
+      .subscribe(
+        () => this.router.navigate(['/all-products']),
+        () => this.hasInvalidForm = true,
+      ));
   }
 
   private createLoginForm(): void {
