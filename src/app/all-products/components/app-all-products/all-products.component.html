@@ -6,23 +6,20 @@
   fxLayoutGap.gt-md="2px"
   fxLayoutAlign.gt-md="space-around start"
 >
-
   <div fxLayout="column" fxFlex="1 1 100%" fxFlex.gt-md="1 1 70%">
     <app-sorting></app-sorting>
 
     <div fxLayout="row wrap">
-      <div  *ngFor="let product of products"
-          [ngStyle]="{'margin.%': 2}"
-          fxFlex="0 0 96%"
-          fxFlex.gt-xs="0 0 46%"
-          fxFlex.gt-sm="0 0 29%"
-          fxFlex.gt-lg="0 0 21%">
-          <app-product [product]="product"
-              [ngStyle.xs]="{'margin-bottom.px': 20}">
-          </app-product>
+      <div
+        *ngFor="let product of products"
+        [ngStyle]="{'margin.%': 2}"
+        fxFlex="0 0 96%"
+        fxFlex.gt-xs="0 0 46%"
+        fxFlex.gt-sm="0 0 29%"
+        fxFlex.gt-lg="0 0 21%"
+      >
+        <app-product [product]="product" [ngStyle.xs]="{'margin-bottom.px': 20}"></app-product>
       </div>
-
-      <div id="new"></div>
     </div>
   </div>
 

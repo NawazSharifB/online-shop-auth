@@ -1,14 +1,16 @@
+@import '../../../../assets/styles/variables.scss';
+
 .main-div {
   margin-top: 10px;
 
   .sort {
-    margin: 0px 4% 0px 0px;
+    margin: 0 4% 0 0;
 
     .sort-button {
       border-bottom: 2px solid gray;
 
       .sort-by {
-        color:  #00b300;
+        color:  $highLightColor;
         margin: 0px 5px;
       }
     }
