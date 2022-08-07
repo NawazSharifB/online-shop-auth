@@ -1,9 +1,9 @@
-import { Subscription, Observable } from 'rxjs';
-import { CartService } from '../../../shared/services/cart.service';
-import { DataService } from '../../../shared/services/data.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 import { Product } from '../../../shared/models/products.model';
+import { CartService } from '../../../shared/services/cart.service';
+import { DataService } from '../../../shared/services/data.service';
 
 
 
@@ -12,7 +12,6 @@ import { Product } from '../../../shared/models/products.model';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss']
 })
-
 export class CartComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['Cancel', 'Picture', 'Title', 'Price', 'Edit', 'SubTotal'];
 
@@ -41,5 +40,4 @@ export class CartComponent implements OnInit, OnDestroy {
   removeItem(element: Product): void {
     this.cartService.removeFromCart(element).subscribe();
   }
-
 }
