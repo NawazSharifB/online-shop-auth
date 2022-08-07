@@ -1,19 +1,19 @@
-import { PurchasedProductData } from './../interfaces/purchase-product-data';
-import { ShopClientService } from './shop-client.service';
 import { Injectable } from '@angular/core';
-import { Observable, observable, BehaviorSubject, of } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { SortByOptions } from '../enums/sort-by-options';
 import { FailedObservableResponse } from '../interfaces/failed-observable-response';
 import { LoggedInUserCredential } from '../interfaces/logged-in-user-credential';
 import { LoginUserData } from '../interfaces/login-user-data';
+import { PurchasedProductData } from '../interfaces/purchase-product-data';
+import { PurchasedUserInfo } from '../interfaces/purchased-user-info';
 import { RegisterUserData } from '../interfaces/register-user-data';
 import { SuccessfulObservableResponse } from '../interfaces/successful-observable-response';
-import { Product } from '../models/products.model';
-import { PurchasedUserInfo } from '../interfaces/purchased-user-info';
 import { CartProduct } from '../models/cart-product';
-import { UserPurchaseInfo } from '../models/user-purchase-info';
 import { FailureResponse } from '../models/failure-response';
-import { SortByOptions } from '../enums/sort-by-options';
+import { Product } from '../models/products.model';
+import { UserPurchaseInfo } from '../models/user-purchase-info';
+import { ShopClientService } from './shop-client.service';
 
 @Injectable({
   providedIn: 'root'
@@ -71,8 +71,9 @@ export class StorageService {
 
   loginUser(loginData: LoginUserData): Observable<LoggedInUserCredential> {
     return new Observable(observer => {
-      const userData = this.getAllRegisteredUserInfo()
-                        .find(userInfo => userInfo.email === loginData.email && userInfo.password === loginData.password);
+      const userData =
+      this.getAllRegisteredUserInfo()
+        .find(userInfo => userInfo.email === loginData.email && userInfo.password === loginData.password);
 
     if (userData) {
       const loggedInUserCred = this.getLoginUserCred(userData);
@@ -169,7 +170,6 @@ export class StorageService {
     const modifiedProduct = <Product>allProducts.find(product => product._id === productId);
 
     modifiedProduct.stock += changeBy;
-    // modifiedProduct.inCart -= changeBy;
 
     this.storeProductsLocally(allProducts);
   }
@@ -321,7 +321,6 @@ export class StorageService {
       for (const purchasedProduct of purchasedProducts.purchasedProductData) {
         if (purchasedProduct.productId === product._id) {
           product.stock -= purchasedProduct.amount;
-          // product.inCart = purchasedProduct.amount;
           break;
         }
       }
