@@ -1,12 +1,13 @@
-import { DataService } from './../../shared/services/data.service';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
+import { DataService } from '../../shared/services/data.service';
+import { AvailableRoutes } from './../../shared/enums/available-routes';
 import { LoggedInUserCredential } from './../../shared/interfaces/logged-in-user-credential';
 import { LoginUserData } from './../../shared/interfaces/login-user-data';
-import { SuccessfulObservableResponse } from './../../shared/interfaces/successful-observable-response';
 import { RegisterUserData } from './../../shared/interfaces/register-user-data';
+import { SuccessfulObservableResponse } from './../../shared/interfaces/successful-observable-response';
 import { StorageService } from './../../shared/services/storage.service';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class AuthenticationService {
     private storageService: StorageService,
     private router: Router,
     private dataService: DataService
-  ) { }
+  ) {}
 
   private get loggedInUserCred(): LoggedInUserCredential  | null {
     const stringifiedData = localStorage.getItem(this.loggedInUserDataStorageKey);
@@ -44,7 +45,7 @@ export class AuthenticationService {
 
   redirectIfHasValidLoginInfo(): void {
     if (this.isUserLoggedIn()) {
-      this.router.navigate(['/all-products']);
+      this.router.navigate([`/${AvailableRoutes.AllProducts}`]);
     }
   }
 
