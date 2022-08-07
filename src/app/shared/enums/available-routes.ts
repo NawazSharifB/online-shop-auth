@@ -7,4 +7,6 @@ export enum AvailableRoutes {
   Register = 'register',
   AuthLogin = 'auth/login',
   AuthRegister = 'auth/register',
+  NotFound = 'not-found',
+  ServerError = 'server-error',
 }
