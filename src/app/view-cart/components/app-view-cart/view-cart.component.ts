@@ -1,8 +1,8 @@
-import { CartService } from '../../../shared/services/cart.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Product } from '../../../shared/models/products.model';
+import { CartService } from '../../../shared/services/cart.service';
 import { DataService } from '../../../shared/services/data.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-view-cart',
@@ -14,8 +14,10 @@ export class ViewCartComponent implements OnInit, OnDestroy {
 
   private subscription$ = new Subscription();
 
-  constructor(private dataService: DataService,
-              private cartService: CartService) { }
+  constructor(
+    private dataService: DataService,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
     this.subscription$.add(
@@ -30,5 +32,4 @@ export class ViewCartComponent implements OnInit, OnDestroy {
   removeItem(product: Product): void {
     this.cartService.removeFromCart(product).subscribe();
   }
-
 }
