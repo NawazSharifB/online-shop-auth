@@ -1,7 +1,8 @@
-import { AvailableRoutes } from './../../../shared/enums/available-routes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
+import { AvailableRoutes } from '../../../shared/enums/available-routes';
+import { RouteParam } from '../../../shared/enums/route-params';
 import { Product } from '../../../shared/models/products.model';
 import { DataService } from '../../../shared/services/data.service';
 
@@ -33,7 +34,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.subscription$.add(
       combineLatest([this.route.paramMap, this.dataService.fetchAllProducts()])
       .subscribe( data => {
-        const param = data[0].get('id');
+        const param = data[0].get(RouteParam.ProductDetailId);
         const products = this.dataService.products$.value;
 
         products.forEach( product => {
