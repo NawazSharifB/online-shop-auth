@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AddToCartComponent } from './add-to-cart.component';
 
 describe('AddToCartComponent', () => {

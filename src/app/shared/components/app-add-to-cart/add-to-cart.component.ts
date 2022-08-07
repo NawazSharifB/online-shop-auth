@@ -1,8 +1,8 @@
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DataService } from './../../services/data.service';
-import { CartService } from '../../../shared/services/cart.service';
 import { Product } from '../../../shared/models/products.model';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { CartService } from '../../../shared/services/cart.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-add-to-cart',
@@ -39,5 +39,4 @@ export class AddToCartComponent implements OnInit, OnDestroy {
   addItem(): void {
     this.cartService.addToCart(this.product).subscribe();
   }
-
 }

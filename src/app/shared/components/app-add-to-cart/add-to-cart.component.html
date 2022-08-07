@@ -1,12 +1,10 @@
-<p
-  class="out-of-stock-message"
-  [ngStyle]="{'visibility': product.stock ? 'hidden': 'visible'}"
->
+<p class="out-of-stock-message" [ngStyle]="{'visibility': product.stock ? 'hidden': 'visible'}">
   Out Of Stock
 </p>
 
 <div class="add-to-cart">
-  <button class="button-design-black"
+  <button
+    class="button-design-black"
     mat-stroked-button
     [disabled]="!product.stock"
     *ngIf="!inCartProduct.inCart; else rocker"
@@ -21,25 +19,15 @@
     <button
       class="button-design-black remove-button"
       mat-stroked-button
-      [disabled]="inCartProduct.inCart === 0"
+      [disabled]="inCartProduct.inCart < 1"
       (click)="reduceItem()"
     >
       <mat-icon>remove</mat-icon>
     </button>
 
-    <input
-      class="add-to-cart-input"
-      maInput
-      disabled
-      [value]="inCartProduct.inCart"
-    >
+    <input class="add-to-cart-input" maInput disabled [value]="inCartProduct.inCart">
 
-    <button
-      class="button-design-black"
-      mat-stroked-button
-      [disabled]="!product.stock"
-      (click)="addItem()"
-    >
+    <button class="button-design-black" mat-stroked-button [disabled]="!product.stock" (click)="addItem()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
