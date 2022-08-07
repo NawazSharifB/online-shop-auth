@@ -8,17 +8,16 @@ import { ShortenTitlePipe } from './pipes/shorten-title.pipe';
 const EXPORTED_DECLARATIONS = [ShortenTitlePipe, AddToCartComponent];
 
 @NgModule({
-    declarations: [EXPORTED_DECLARATIONS],
-    imports: [
-        CommonModule,
-        FlexLayoutModule,
-        NgMaterialModule,
-    ],
-    exports: [
-      EXPORTED_DECLARATIONS,
-      CommonModule,
-      FlexLayoutModule,
-    ]
-  })
-
+  declarations: [EXPORTED_DECLARATIONS],
+  imports: [
+    CommonModule,
+    FlexLayoutModule,
+    NgMaterialModule,
+  ],
+  exports: [
+    EXPORTED_DECLARATIONS,
+    CommonModule,
+    FlexLayoutModule,
+  ]
+})
 export class SharedModule { }
