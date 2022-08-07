@@ -16,9 +16,7 @@ export class AllProductsComponent implements OnInit, OnDestroy {
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    if (!this.dataService.products$.value.length) {
-      this.subscription.add(this.dataService.fetchAllProducts().subscribe());
-    }
+    this.subscription.add(this.dataService.fetchAllProducts().subscribe());
 
     this.subscription.add(this.dataService.products$.subscribe( products => {
       this.products = products;

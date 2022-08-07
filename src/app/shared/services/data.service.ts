@@ -22,19 +22,7 @@ export class DataService {
   constructor(private router: Router, private storageService: StorageService, private dialogService: DialogService) {}
 
   fetchAllProducts(): Observable<Product[]> {
-    this.dialogService.isLoading$.next(true);
-
-    return this.storageService
-      .fetchAllProducts()
-      .pipe(
-        tap(products => this.products$.next(products)),
-        tap(() => this.populateCartItems()),
-        finalize(() => this.dialogService.isLoading$.next(false)),
-        catchError(error => {
-          this.router.navigate([`/${AvailableRoutes.ServerError}`]);
-          return throwError(() => error);
-        }),
-      );
+    return this.products$.value.length ? this.products$.asObservable() : this.fetchDataFromStorage();
   }
 
 
@@ -51,7 +39,10 @@ export class DataService {
     const cartItems = allProductInfo
       .filter(product => userPurchaseInfo.find(purchasedProduct => purchasedProduct.productId === product._id))
       .map(product => {
-        product.inCart = (<PurchasedProductData>userPurchaseInfo.find(purchasedProduct => purchasedProduct.productId === product._id)).amount;
+        product.inCart = (<PurchasedProductData>userPurchaseInfo
+          .find(purchasedProduct =>
+            purchasedProduct.productId === product._id))
+            .amount;
 
         return product;
       } );
@@ -62,5 +53,21 @@ export class DataService {
   clearAllData(): void {
     this.products$.next([]);
     this.userCartInfo$.next([]);
+  }
+
+  private fetchDataFromStorage(): Observable<Product[]> {
+    this.dialogService.isLoading$.next(true);
+
+    return this.storageService
+    .fetchAllProducts()
+    .pipe(
+      tap(products => this.products$.next(products)),
+      tap(() => this.populateCartItems()),
+      finalize(() => this.dialogService.isLoading$.next(false)),
+      catchError(error => {
+        this.router.navigate([`/${AvailableRoutes.ServerError}`]);
+        return throwError(() => error);
+      }),
+    );
   }
 }

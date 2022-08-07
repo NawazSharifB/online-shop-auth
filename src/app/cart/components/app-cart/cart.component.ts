@@ -24,9 +24,7 @@ export class CartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (!this.dataService.products$.value.length) {
-      this.subscription$.add(this.dataService.fetchAllProducts().subscribe());
-    }
+    this.subscription$.add(this.dataService.fetchAllProducts().subscribe());
   }
 
   ngOnDestroy(): void {
