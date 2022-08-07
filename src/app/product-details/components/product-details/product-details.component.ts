@@ -1,3 +1,4 @@
+import { AvailableRoutes } from './../../../shared/enums/available-routes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Subscription } from 'rxjs';
@@ -42,11 +43,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         });
 
         if (!this.product) {
-          this.router.navigate(['/not-found']);
+          this.router.navigate([`/${AvailableRoutes.NotFound}`]);
         }
       },
       () => {
-        this.router.navigate(['/server-error']);
+        this.router.navigate([`/${AvailableRoutes.ServerError}`]);
       })
     );
   }
