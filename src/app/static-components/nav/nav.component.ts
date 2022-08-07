@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from '../../authentication/services/authentication.service';
+import { AvailableRoutes } from '../../shared/enums/available-routes';
 import { DataService } from '../../shared/services/data.service';
 import { DialogService } from '../../shared/services/dialog.service';
 
@@ -12,6 +13,7 @@ import { DialogService } from '../../shared/services/dialog.service';
 })
 export class NavComponent implements OnInit, OnDestroy {
   totalCartItem = 0;
+  availableRoutes = AvailableRoutes;
 
   private subscription$ = new Subscription();
 
@@ -20,7 +22,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private router: Router,
     private dataService: DataService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.subscription$.add(
@@ -46,7 +48,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   logoutUser(): void {
     this.authenticationService.onLogout();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate([`${AvailableRoutes.AuthLogin}`]);
   }
 
 }
