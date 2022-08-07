@@ -8,17 +8,17 @@ import { ViewCartModule } from '../view-cart/view-cart.module';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 
 @NgModule({
-    declarations: [
-        ProductDetailsComponent
-    ],
-    imports: [
-        NgMaterialModule,
-        ViewCartModule,
-        SharedModule,
-        CommonModule,
-        RouterModule.forChild([
-            {path: `:${RouteParam.ProductDetailId}`, component: ProductDetailsComponent}
-        ])
-    ],
-  })
-export class ProductDetailsModule { }
+  declarations: [
+    ProductDetailsComponent
+  ],
+  imports: [
+    NgMaterialModule,
+    ViewCartModule,
+    SharedModule,
+    CommonModule,
+    RouterModule.forChild([
+      {path: `:${RouteParam.ProductDetailId}`, component: ProductDetailsComponent}
+    ]),
+  ],
+})
+export class ProductDetailsModule {}
