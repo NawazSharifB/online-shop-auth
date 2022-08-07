@@ -1,4 +1,4 @@
-import { PurchasedProductData } from "./purchase-product-data";
+import { PurchasedProductData } from './purchase-product-data';
 
 export interface PurchasedUserInfo {
   userId: string;
