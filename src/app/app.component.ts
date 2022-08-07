@@ -5,8 +5,6 @@ import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { Subscription, Observable } from 'rxjs';
 import { DataService } from './shared/services/data.service';
 import { DialogService } from './shared/services/dialog.service';
-import { mergeMap } from 'rxjs/operators';
-import { from } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +21,6 @@ export class AppComponent implements OnInit {
     public dataService: DataService,
     private dialogService: DialogService,
     private authenticationService: AuthenticationService,
-    private http: HttpClient,
   ) {}
 
   ngOnInit(): void {
