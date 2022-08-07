@@ -1,15 +1,14 @@
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import { SORT_OPTIONS } from '../constants/sort-options';
+import { AvailableRoutes } from '../enums/available-routes';
+import { SortByOptions } from '../enums/sort-by-options';
+import { DropdownOptions } from '../interfaces/dropdown-options';
+import { PurchasedProductData } from '../interfaces/purchase-product-data';
+import { Product } from '../models/products.model';
 import { DialogService } from './dialog.service';
 import { StorageService } from './storage.service';
-import { Injectable } from '@angular/core';
-
-import { Product } from '../models/products.model';
-import { BehaviorSubject, catchError, finalize, Observable, tap, throwError } from 'rxjs';
-import { Router } from '@angular/router';
-import { ShopClientService } from './shop-client.service';
-import { SortByOptions } from '../enums/sort-by-options';
-import { PurchasedProductData } from '../interfaces/purchase-product-data';
-import { SORT_OPTIONS } from '../constants/sort-options';
-import { DropdownOptions } from '../interfaces/dropdown-options';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +31,7 @@ export class DataService {
         tap(() => this.populateCartItems()),
         finalize(() => this.dialogService.isLoading$.next(false)),
         catchError(error => {
-          this.router.navigate(['/server-error']);
+          this.router.navigate([`/${AvailableRoutes.ServerError}`]);
           return throwError(() => error);
         }),
       );
