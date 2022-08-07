@@ -1,33 +1,31 @@
+import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DataService } from '../../../shared/services/data.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
 })
-export class CheckoutComponent implements OnInit, OnDestroy {
+export class CheckoutComponent implements OnDestroy {
+  private subscription$ = new Subscription();
 
-  dataService$: Subscription;
-
-  constructor(private dataService: DataService) { }
-
-  ngOnInit(): void {
-  }
+  constructor(private dataService: DataService) {}
 
   ngOnDestroy(): void {
-    this.dataService$.unsubscribe();
+    this.subscription$.unsubscribe();
   }
 
   totalCost(): number {
     let total = 0;
 
-    this.dataService$ = this.dataService.userCartInfo$.subscribe( items => {
-      items.forEach( item => {
-        total += item.inCart * item.price;
-      });
-    });
+    this.subscription$.add(
+      this.dataService.userCartInfo$.subscribe( items => {
+        items.forEach( item => {
+          total += item.inCart * item.price;
+        });
+      }),
+    );
 
     return total;
   }
