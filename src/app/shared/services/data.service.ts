@@ -25,7 +25,6 @@ export class DataService {
     return this.products$.value.length ? this.products$.asObservable() : this.fetchDataFromStorage();
   }
 
-
   sortBy(sortBy: DropdownOptions<SortByOptions>): void {
     this.sortBy$.next(sortBy);
     const products = this.storageService.sortProducts(sortBy.key);
